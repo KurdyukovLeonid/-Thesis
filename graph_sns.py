@@ -1,23 +1,31 @@
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# прописываем данные графика
-labels = ['Иваново', 'Кохма', 'Шуя', 'Лежнево', 'Савино']
-values = [11.76, 5.88, 35.29, 23.53, 23.53]
+# читаем данные из CSV-файла
+data = pd.read_csv('data.csv')
 
-# настраиваем стиль
-sns.set(style="darkgrid")
+# используем стиль для графика
+sns.set(style='whitegrid')
 
-# создаем график
-plt.figure(figsize=(10, 6))
-barplot = sns.barplot(x=labels, y=values, palette='colorblind', edgecolor='black')
+# создаем сам график с доп. данными
+plt.figure(figsize=(12, 7))
+bars = sns.barplot(x='label', y='value', data=data, palette='Set2', alpha=0.75)
 
-# делаем настройки графика
-plt.title('Количество СОЧ по муниципальным образованиям', fontsize=16, fontweight='bold')
-plt.xlabel('Муниципальные образования', fontsize=14, fontweight='bold')
-plt.ylabel('Проценты', fontsize=14)
-plt.xticks(rotation=15, fontsize=12)
+# добавляем проценты над столбами
+for bar in bars.patches:
+    yval = bar.get_height()
+    bars.text(bar.get_x() + bar.get_width()/2,
+               yval,
+               round(yval, 2),
+               ha='center', va='bottom', fontsize=12)
 
-# выводим график
+# выводим надписи и размеры шрифта
+bars.set_xlabel('Районы', fontsize=14)
+bars.set_ylabel('Проценты', fontsize=14)
+bars.set_title('Количество СОЧ по районам', fontsize=16)
+bars.set_xticklabels(bars.get_xticklabels(), rotation=45)
+
+# показываем график
 plt.tight_layout()
 plt.show()
