@@ -1,29 +1,36 @@
+import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 
-# создаем стиль диаграммы
-mpl.style.use(['classic'])
+# читаем данные из CSV-файла
+data = pd.read_csv('data.csv')
 
-# прописываем данные диаграммы
-labels = ['Иваново', 'Кохма', 'Шуя', 'Лежнево', 'Савино']
-values = [11.76, 5.88, 35.29, 23.53, 23.53]
+# достаем наши значения
+labels = data['label']
+values = data['value']
 
-# делаем цветовую установку
-colors = ['b','g','c','r','y']
+# создаем сам график и цветовую палитру
+plt.figure(figsize=(12, 7))
+color = ['g', 'c', 'r', 'y', 'm']
 
-# создаем сам график
-fig1, ax1 = plt.subplots()
-ax1.pie(values, colors=colors, autopct='%1.1f%%', shadow=True, startangle=90)
+# используем стиль для графика
+plt.style.use('classic')
 
-# делаем диаграмму круглой
-ax1.axis('equal')
+# строим гистограмму с доп. данными
+bars = plt.bar(labels, values, color=color, alpha=0.75, edgecolor='black', linewidth=1.5)
 
-# заголовок диаграммы
-plt.title('Количество СОЧ по муниципальным образованиям')
+# добавляем проценты над стобами
+for bar in bars:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), ha='center', va='bottom', fontsize=12)
 
-# добавляем легенду, чтобы ее левый верхний угол был сразу справа от диаграммы
-plt.legend(loc='upper left', labels = labels, bbox_to_anchor=(0.90, 0.90))
+# выводим надписи и размеры шрифта
+plt.xlabel('Районы', fontsize=14)
+plt.ylabel('Проценты', fontsize=14)
+plt.title('Количество СОЧ по районам', fontsize=16)
+plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle=':', alpha=0.5)
 
-# выводим диаграмму с оптимизацией
+# показываем график
 plt.tight_layout()
 plt.show()
+
