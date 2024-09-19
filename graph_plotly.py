@@ -1,28 +1,45 @@
+import pandas as pd
 import plotly.graph_objects as go
 
-# прописываем данные графика
-labels = ['Иваново', 'Кохма', 'Шуя', 'Лежнево', 'Савино']
-values = [11.76, 5.88, 35.29, 23.53, 23.53]
+# читаем данные из CSV-файла
+data = pd.read_csv('data.csv')
 
-# делаем цветовую установку
-colors = ['b','g','c','r','y']
+# достаем наши значения
+labels = data['label']
+values = data['value']
 
-# создаем саму диаграмму
-pie_chart = go.Figure(data=[go.Pie(
-    labels=labels,
-    values=values,
-    marker=dict(colors=colors),
-    hole=0.2,
-    textinfo='label+percent',
-    insidetextorientation='radial'
-)])
+# создаем интерактивный график
+fig = go.Figure()
 
-#  делаем настройки диаграммы
-pie_chart.update_layout(
-    title_text='Количество СОЧ по муниципальным образованиям',
-    title_x=0.5,
-    annotations=[dict(text='Районы', x=0.5, y=0.5, font_size=20, showarrow=False)]
+# добавляем столбцы с указанием градиента
+fig.add_trace(go.Bar(
+    x=labels,
+    y=values,
+    marker=dict(
+        color=values,
+        colorscale='Viridis',
+        colorbar=dict(title='Проценты'),
+        line=dict(width=1.5, color='black'),
+    ),
+    opacity=0.85,
+    text=[round(value, 2) for value in values],
+    textposition='auto',
+    hoverinfo='text',
+))
+
+# выводим надписи и размеры шрифта
+fig.update_layout(
+    title=dict(
+        text='Количество СОЧ по районам',
+        font=dict(size=24)
+    ),
+    xaxis_title='Районы',
+    yaxis_title='Проценты',
+    xaxis_tickangle=-45,
+    template='plotly_white',
+    hovermode='closest',
+    margin=dict(l=40, r=40, t=60, b=40)
 )
 
-# выводим диаграмму
-pie_chart.show()
+# показываем график
+fig.show()
